@@ -27,7 +27,7 @@ public class Biglietto {
     private boolean cancellato;
     @Version
     private long version;
-
     @Column
     private long idUtente;
 }
+ 

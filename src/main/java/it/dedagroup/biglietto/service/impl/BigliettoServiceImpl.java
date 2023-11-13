@@ -14,12 +14,15 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class BigliettoServiceImpl implements BigliettoServiceDef {
+	
     private final BigliettoRepository repo;
+
     @Transactional(rollbackOn = ResponseStatusException.class)
     @Override
     public Biglietto saveBiglietto(Biglietto biglietto) {
         return repo.save(biglietto);
     }
+    
     @Transactional(rollbackOn = ResponseStatusException.class)
     @Override
     public Biglietto modifyBiglietto(Biglietto biglietto) {
@@ -31,6 +34,7 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
         b.setVersion(biglietto.getVersion());
         return repo.save(b);
     }
+    
     @Transactional(rollbackOn = ResponseStatusException.class)
     @Override
     public void deleteByBiglietto(long id_biglietto) {
@@ -48,7 +52,7 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     public List<Biglietto> findAll() {
         return repo.findAll();
     }
-
+    //0105ABRCTG
     @Override
     public Biglietto findByIdAndIdUtente(long id_biglietto, long id_utente) {
         return repo.findByIdAndIdUtente(id_biglietto,id_utente).orElseThrow(() ->
