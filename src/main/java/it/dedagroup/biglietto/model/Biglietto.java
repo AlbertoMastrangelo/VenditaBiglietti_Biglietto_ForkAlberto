@@ -2,6 +2,8 @@ package it.dedagroup.biglietto.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
@@ -15,7 +17,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Biglietto {
-    @Id
+    
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
     private LocalDate dataAcquisto;

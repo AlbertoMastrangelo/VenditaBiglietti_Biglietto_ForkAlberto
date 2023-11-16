@@ -1,4 +1,4 @@
-package it.dedagroup.biglietto.util;
+package it.dedagroup.biglietto.path;
 
 public class UtilPath {
     private static final String BIGLIETTO_PATH = "/biglietto";

@@ -2,6 +2,8 @@ package it.dedagroup.biglietto.dto.request;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -10,6 +12,7 @@ import lombok.Data;
 @Data
 public class BigliettoDTORequest {
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@NotBlank(message = "La data non può essere vuota")
 	private LocalDate dataAcquisto;
 	

@@ -28,6 +28,7 @@ public interface BigliettoServiceDef {
     public List<Biglietto> findAllByPrezzoIsLessThanEqualAndCancellatoFalse(double prezzo);
     public List<Biglietto> findAllByIdUtenteAndCancellatoFalse(long id_utente);
     public List<Biglietto> findAllByDataAcquistoAndCancellatoFalse(LocalDate dataAcquisto);
+    
 
 
 

@@ -5,6 +5,8 @@ import it.dedagroup.biglietto.mapper.BigliettoMapper;
 import it.dedagroup.biglietto.model.Biglietto;
 import it.dedagroup.biglietto.service.def.BigliettoServiceDef;
 import lombok.AllArgsConstructor;
+
+import static it.dedagroup.biglietto.path.UtilPath.*;
 import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.http.MediaType;
@@ -15,7 +17,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import static it.dedagroup.biglietto.util.UtilPath.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,7 +25,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @RestController
-@RequestMapping("/biglietto")
 @AllArgsConstructor
 @Tag(name = "Biglietto Controller", description = "In questo controller andremo ad " +
         "aggiungere, modificare, eliminare o cercare i vari biglietti tramite i propri attributi")
@@ -36,28 +36,28 @@ public class BigliettoController {
     
     @Operation(summary = "metodo per salvare un Biglietto", description = "In questo EndPoint prendiamo un oggetto BigliettoDTORequest e lo salviamo nel DB tramite la repository")
     @ApiResponses(value = {
-    	       @ApiResponse(responseCode = "200", description = "Biglietto salvato correttamente", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+    	       @ApiResponse(responseCode = "200", description = "Biglietto salvato correttamente", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
     	       @ApiResponse(responseCode = "400", description = "Errato inserimento del JSON, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     	})
     @PostMapping(INSERT_BIGLIETTO_PATH)
-    public ResponseEntity<Biglietto> saveBiglietto(@RequestBody BigliettoDTORequest biglietto){
-        return ResponseEntity.status(CREATED).body(bigliettoServiceDef.saveBiglietto(bMap.fromDTORequestToBiglietto(biglietto)));
+    public ResponseEntity<Biglietto> saveBiglietto(@RequestBody Biglietto biglietto){
+        return ResponseEntity.status(CREATED).body(bigliettoServiceDef.saveBiglietto((biglietto)));
     }
     
     @Operation(summary = "metodo per modificare un Biglietto", description = "In questo EndPoint prendiamo un oggetto BigliettoDTORequest già esistente e lo modifichiamo per poi risalvarlo nel DB")
     @ApiResponses(value = {
-    	       @ApiResponse(responseCode = "200", description = "Biglietto modificato correttamente", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+    	       @ApiResponse(responseCode = "200", description = "Biglietto modificato correttamente", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
     	       @ApiResponse(responseCode = "400", description = "Errato inserimento del JSON, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     	})
     @PostMapping(MODIFY_BIGLIETTO_PATH)
-    public ResponseEntity<Biglietto> modifyBiglietto(@RequestBody BigliettoDTORequest biglietto){
-        return ResponseEntity.status(OK).body(bigliettoServiceDef.modifyBiglietto(bMap.fromDTORequestToBiglietto(biglietto)));
+    public ResponseEntity<Biglietto> modifyBiglietto(@RequestBody Biglietto biglietto){
+        return ResponseEntity.status(OK).body(bigliettoServiceDef.modifyBiglietto((biglietto)));
     }
     
     @Operation(summary = "metodo per eliminare un Biglietto", description = "In questo EndPoint selezioniamo il biglietto tramite L'id inserito nel "
     						+ "PathVariable, per poi settargli il cancellato a true e aggiornare il DB tramite repository")
     @ApiResponses(value = {
-    	       @ApiResponse(responseCode = "200", description = "Biglietto non più disponibile", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+    	       @ApiResponse(responseCode = "200", description = "Biglietto non più disponibile", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class))),
     	       @ApiResponse(responseCode = "400", description = "Biglietto non trovato, Errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     	})
     @PostMapping(DELETE_BIGLIETTO_PATH+"/{id}")
@@ -69,7 +69,7 @@ public class BigliettoController {
     @Operation(summary = "metodo per cercare un Biglietto", description = "In questo EndPoint cerchiamo il biglietto(se esiste) tramite L'id inserito nel "
 			+ "PathVariable, per poi ritornare l'oggetto selezionato tramite repository")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Biglietto trovato tramite l'ID", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+			@ApiResponse(responseCode = "200", description = "Biglietto trovato tramite l'ID", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
 			@ApiResponse(responseCode = "400", description = "Biglietto non trovato, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_BY_ID_PATH+"/{id}")
@@ -79,7 +79,7 @@ public class BigliettoController {
     
     @Operation(summary = "metodo cercare tutti i Biglietti", description = "In questo EndPoint ritorniamo una lista di biglietti tramite repository")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Lista di Biglietti trovati", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),					
+			@ApiResponse(responseCode = "200", description = "Lista di Biglietti trovati", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),					
 			@ApiResponse(responseCode = "400", description = "Biglietti non trovati, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_ALL_PATH)
@@ -90,18 +90,18 @@ public class BigliettoController {
     @Operation(summary = "metodo per cercare un Biglietto tramite l'Utente", description = "In questo EndPoint cerchiamo il biglietto tramite L'ID inserito nel "
 			+ "PathVariable, per poi ritornare l'oggetto selezionato tramite repository")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Biglietto trovato tramite ID e appartenente all'utente con ID inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+			@ApiResponse(responseCode = "200", description = "Biglietto trovato tramite ID e appartenente all'utente con ID inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
 			@ApiResponse(responseCode = "400", description = "Biglietto non trovato, errato inserimento dei RequestParam, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
-    @GetMapping(FIND_BY_ID_AND_UTENTE_ID_PATH)
-    public ResponseEntity<Biglietto> findByIdAndIdUtente(@RequestParam("id_biglietto") long id_biglietto,@RequestParam("id_utente") long id_utente){
+    @GetMapping(FIND_BY_ID_AND_UTENTE_ID_PATH+"/{id_biglietto}/{id_utente}")
+    public ResponseEntity<Biglietto> findByIdAndIdUtente(@PathVariable("id_biglietto") long id_biglietto,@PathVariable("id_utente") long id_utente){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.findByIdAndIdUtente(id_biglietto, id_utente));
     }
     
     @Operation(summary = "metodo per cercare un Biglietto tramite serialeBiglietto ", description = "In questo EndPoint cerchiamo il biglietto tramite il numero seriale del biglietto"
 			+ " inserito nel PathVariable")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Biglietto trovato tramite numero seriale inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+			@ApiResponse(responseCode = "200", description = "Biglietto trovato tramite numero seriale inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
 			@ApiResponse(responseCode = "400", description = "Biglietto non trovato, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_BY_SERIALE_PATH+"/{seriale}")
@@ -111,7 +111,7 @@ public class BigliettoController {
     
     @Operation(summary = "metodo che ritorna una lista di Biglietti con prezzo maggiore o uguale al prezzo inserito", description = "Questo EndPoint ritorna una lista di biglietti con prezzo uguale o superiore al prezzo in serito traminte pathVariable")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Lista di biglietti trovata con prezzo superiore a quello inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+			@ApiResponse(responseCode = "200", description = "Lista di biglietti trovata con prezzo superiore a quello inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
 			@ApiResponse(responseCode = "400", description = "Lista di biglietti non trovata tramite prezzo superiore, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_ALL_BY_PREZZO_IS_GREATER_THAN_EQUAL_PATH+"/{prezzo}")
@@ -121,7 +121,7 @@ public class BigliettoController {
     
     @Operation(summary = "metodo che ritorna una lista di Biglietti con prezzo uguale o inferiore al prezzo inserito", description = "Questo EndPoint ritorna una lista di biglietti con prezzo uguale o inferiore al prezzo in serito traminte pathVariable")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Lista di biglietti trovata con prezzo inferiore a quello inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+			@ApiResponse(responseCode = "200", description = "Lista di biglietti trovata con prezzo inferiore a quello inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
 			@ApiResponse(responseCode = "400", description = "Lista di biglietti non trovata tramite prezzo inferiore, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_ALL_BY_PREZZO_IS_LESS_THAN_EQUAL_PATH+"/{prezzo}")
@@ -131,7 +131,7 @@ public class BigliettoController {
     
     @Operation(summary = "metodo che ritorna una lista di Biglietti tramide l'ID Utente inserito", description = "Questo EndPoint ritorna una lista di biglietti tramide l'ID Utente inserito nel pathVariable")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Lista di biglietti trovata tramide l'ID Utente inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+			@ApiResponse(responseCode = "200", description = "Lista di biglietti trovata tramide l'ID Utente inserito", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
 			@ApiResponse(responseCode = "400", description = "Lista di biglietti non trovata tramite l'ID Utente inserito, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_ALL_BY_ID_UTENTE_PATH+"/{id}")
@@ -141,7 +141,7 @@ public class BigliettoController {
     
     @Operation(summary = "metodo che ritorna una lista di Biglietti tramide la data di acquisto inserita", description = "Questo EndPoint ritorna una lista di biglietti tramide la data di acquisto inserita nel pathVariable")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Lista di biglietti trovata tramide la data di acquisto inserita", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BigliettoDTORequest.class))),
+			@ApiResponse(responseCode = "200", description = "Lista di biglietti trovata tramide la data di acquisto inserita", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Biglietto.class))),
 			@ApiResponse(responseCode = "400", description = "Lista di biglietti non trovata tramite la data di acquisto inserita, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_ALL_BY_DATA_ACQUISTO+"/{data}")
