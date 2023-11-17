@@ -1,5 +1,6 @@
 package it.dedagroup.biglietto;
 
+import it.dedagroup.biglietto.repository.BigliettoRepository;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -9,37 +10,26 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import it.dedagroup.biglietto.dto.request.BigliettoDTORequest;
 import it.dedagroup.biglietto.model.Biglietto;
 import it.dedagroup.biglietto.service.def.GeneralCallService;
-import it.dedagroup.biglietto.utils.Utility;
-
 import static it.dedagroup.biglietto.path.UtilPath.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
-import java.time.Clock;
 import java.time.LocalDate;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ContextConfiguration(classes = VenditaBigliettiBigliettoApplication.class)
 @TestMethodOrder(OrderAnnotation.class)
 @AutoConfigureMockMvc
 class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
-	
-	@Autowired 
+
+	@Autowired
 	MockMvc mvc;
-	
+	@Autowired
+	BigliettoRepository repo;
 	@Test
 	@Order(1)
 	public void testSaveBigliettoSenzaDati() throws Exception{
@@ -49,12 +39,11 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 				.andExpect(MockMvcResultMatchers.status().is4xxClientError())
 				.andDo(print());
 	}
-	
+
 	@Test
 	@Order(2)
 	public void testSaveBigliettoConDati() throws Exception{
-
-		String json = convertToJson(new Biglietto(2, LocalDate.of(2023, 02, 10),19.99,"YYYYYYYY",false, 4, 1));
+		String json = convertToJson(new Biglietto(LocalDate.now(),19.99,"YYYYYYYY",0, 4, 1));
 		mvc.perform(MockMvcRequestBuilders.post(INSERT_BIGLIETTO_PATH)
 				//la richiesta all'interno del body è un JSON
 				.contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +53,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 		 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
 		 .andReturn();
 	}
-	
+
 	@Test
 	@Order(3)
 	public void testFindByBigliettoSenzaDati() throws Exception{
@@ -72,7 +61,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpect(MockMvcResultMatchers.status().is4xxClientError())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(4)
 	public void testFindByBigliettoConDati() throws Exception{
@@ -80,7 +69,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(5)
 	public void testDeleteBigliettoSenzaDati() throws Exception{
@@ -88,7 +77,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpect(MockMvcResultMatchers.status().is4xxClientError())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(6)
 	public void testDeleteBigliettoConDati() throws Exception{
@@ -96,16 +85,16 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(7)
 	public void testTrovaTuttiBiglietti() throws Exception{
 		mvc.perform(MockMvcRequestBuilders.get(FIND_ALL_PATH))
 			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
 			.andReturn();
-		
+
 	}
-	
+
 	@Test
 	@Order(8)
 	public void testTrovaBigliettoByIdAndIdUtenteSenzaDati() throws Exception{
@@ -113,15 +102,15 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 		.andExpect(MockMvcResultMatchers.status().is4xxClientError())
 		.andReturn();
 	}
-	
+
 	@Test
 	@Order(9)
 	public void testTrovaBigliettoByIdAndIdUtenteConDati() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_ID_AND_UTENTE_ID_PATH+"/1/1"))
+		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_ID_AND_UTENTE_ID_PATH+"/1/4"))
 		.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
 		.andReturn();
 	}
-	
+
 	@Test
 	@Order(10)
 	public void testTrovaBigliettoBySerialeSenzaDati() throws Exception{
@@ -129,11 +118,11 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is4xxClientError())
 			.andDo(print());
 	}
-	
+
 	@Test
 	@Order(11)
 	public void testTrovaBigliettoBySerialeConDati() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_SERIALE_PATH+"/XXXXXXX"))
+		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_SERIALE_PATH+"/YYYYYYYY"))
 			.andExpectAll(MockMvcResultMatchers.status().is2xxSuccessful())
 			.andDo(print());
 	}
@@ -145,7 +134,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is4xxClientError())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(12)
 	public void testTrovaListaDiBigliettiByPrezzoSuperioreAConDati() throws Exception{
@@ -153,7 +142,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is2xxSuccessful())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(13)
 	public void testTrovaListaDiBigliettiByPrezzoInferioreASenzaDati() throws Exception{
@@ -161,7 +150,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is4xxClientError())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(14)
 	public void testTrovaListaDiBigliettiByPrezzoInferioreAConDati() throws Exception{
@@ -169,7 +158,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is2xxSuccessful())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(15)
 	public void testTrovaListaDiBigliettiByUtenteSenzaDati() throws Exception{
@@ -177,7 +166,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is4xxClientError())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(16)
 	public void testTrovaListaDiBigliettiByUtenteConDati() throws Exception{
@@ -185,7 +174,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is2xxSuccessful())
 			.andReturn();
 	}
-	
+
 	@Test
 	@Order(17)
 	public void testTrovaListaDiBigliettiByDataDiAcquistoSenzaDati() throws Exception{
@@ -193,15 +182,10 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is4xxClientError())
 			.andReturn();
 	}
-	
 	@Test
 	@Order(18)
-	public void testTrovaListaDiBigliettiByDataDiAcquistoConDati() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.get(FIND_ALL_BY_ID_UTENTE_PATH+LocalDate.now()))
-			.andExpectAll(MockMvcResultMatchers.status().is4xxClientError())
-			.andReturn();
+	public void testCountBigliettiComprati() {
+		int count = repo.countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(1);
+		assertEquals(1,count);
 	}
-	
-	
-	
 }

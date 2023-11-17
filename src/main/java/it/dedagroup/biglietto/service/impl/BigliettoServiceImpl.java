@@ -3,7 +3,6 @@ package it.dedagroup.biglietto.service.impl;
 import it.dedagroup.biglietto.model.Biglietto;
 import it.dedagroup.biglietto.repository.BigliettoRepository;
 import it.dedagroup.biglietto.service.def.BigliettoServiceDef;
-import it.dedagroup.biglietto.utils.Utility;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,7 +33,7 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
         b.setDataAcquisto(biglietto.getDataAcquisto());
         b.setPrezzo(biglietto.getPrezzo());
         b.setSeriale(biglietto.getSeriale());
-        b.setCancellato(biglietto.isCancellato());
+        b.setIsCancellato(biglietto.isIsCancellato());
         b.setVersion(biglietto.getVersion());
         return repo.save(b);
     }
@@ -43,7 +42,7 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     @Override
     public void deleteByBiglietto(long id_biglietto) {
         Biglietto b = findById(id_biglietto);
-        b.setCancellato(true);
+        b.setIsCancellato(true);
         repo.save(b);
     }
 
@@ -92,42 +91,57 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     }
 
     @Override
-    public Biglietto findByIdAndCancellatoFalse(long id_biglietto) {
-        return repo.findByIdAndCancellatoFalse(id_biglietto).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Errore nel trovare il biglietto tramite id: "+id_biglietto));
+    public Biglietto findByIdAndIdPrezzoSettoreEvento(long id_biglietto, long id_prezzoSettoreEvento) {
+        return repo.findByIdAndIdPrezzoSettoreEvento(id_biglietto, id_prezzoSettoreEvento).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Errore nel trovare il biglietto tramite id: "+id_biglietto+" e id prezzo settore evento: "+id_prezzoSettoreEvento));
     }
 
     @Override
-    public List<Biglietto> findAllByCancellatoFalse() {
-        return repo.findAllByCancellatoFalse();
+    public List<Biglietto> findAllByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento) {
+        return repo.findAllByIdPrezzoSettoreEvento(id_prezzoSettoreEvento);
     }
 
     @Override
-    public Biglietto findByIdAndIdUtenteAndCancellatoFalse(long id_biglietto, long id_utente) {
-        return repo.findByIdAndIdUtenteAndCancellatoFalse(id_biglietto,id_utente).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Errore nel trovare il biglietto con id: "+id_biglietto+" e id utente: "+id_utente));
+    public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(long id_prezzoSettoreEvento) {
+        return repo.countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(id_prezzoSettoreEvento);
     }
 
     @Override
-    public Biglietto findBySerialeAndCancellatoFalse(String seriale) {
-        return repo.findBySerialeAndCancellatoFalse(seriale).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Errore nel trovare il biglietto con seriale: "+seriale));
+    public Biglietto findByIdAndIsCancellatoFalse(long id_biglietto) {
+        return repo.findByIdAndIsCancellatoFalse(id_biglietto).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Errore nel trovare il biglietto tramite id: "+id_biglietto));
     }
 
     @Override
-    public List<Biglietto> findAllByPrezzoIsGreaterThanEqualAndCancellatoFalse(double prezzo) {
-        return repo.findAllByPrezzoIsGreaterThanEqualAndCancellatoFalse(prezzo);
+    public List<Biglietto> findAllByIsCancellatoFalse() {
+        return repo.findAllByIsCancellatoFalse();
     }
 
     @Override
-    public List<Biglietto> findAllByPrezzoIsLessThanEqualAndCancellatoFalse(double prezzo) {
-        return repo.findAllByPrezzoIsLessThanEqualAndCancellatoFalse(prezzo);
+    public Biglietto findByIdAndIdUtenteAndIsCancellatoFalse(long id_biglietto, long id_utente) {
+        return repo.findByIdAndIdUtenteAndIsCancellatoFalse(id_biglietto,id_utente).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Errore nel trovare il biglietto con id: "+id_biglietto+" e id utente: "+id_utente));
     }
 
     @Override
-    public List<Biglietto> findAllByIdUtenteAndCancellatoFalse(long id_utente) {
-        return repo.findAllByIdUtenteAndCancellatoFalse(id_utente);
+    public Biglietto findBySerialeAndIsCancellatoFalse(String seriale) {
+        return repo.findBySerialeAndIsCancellatoFalse(seriale).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Errore nel trovare il biglietto con seriale: "+seriale));
     }
 
     @Override
-    public List<Biglietto> findAllByDataAcquistoAndCancellatoFalse(LocalDate dataAcquisto) {
-        return repo.findAllByDataAcquistoAndCancellatoFalse(dataAcquisto);
+    public List<Biglietto> findAllByPrezzoIsGreaterThanEqualAndIsCancellatoFalse(double prezzo) {
+        return repo.findAllByPrezzoIsGreaterThanEqualAndIsCancellatoFalse(prezzo);
+    }
+
+    @Override
+    public List<Biglietto> findAllByPrezzoIsLessThanEqualAndIsCancellatoFalse(double prezzo) {
+        return repo.findAllByPrezzoIsLessThanEqualAndIsCancellatoFalse(prezzo);
+    }
+
+    @Override
+    public List<Biglietto> findAllByIdUtenteAndIsCancellatoFalse(long id_utente) {
+        return repo.findAllByIdUtenteAndIsCancellatoFalse(id_utente);
+    }
+
+    @Override
+    public List<Biglietto> findAllByDataAcquistoAndIsCancellatoFalse(LocalDate dataAcquisto) {
+        return repo.findAllByDataAcquistoAndIsCancellatoFalse(dataAcquisto);
     }
 }
