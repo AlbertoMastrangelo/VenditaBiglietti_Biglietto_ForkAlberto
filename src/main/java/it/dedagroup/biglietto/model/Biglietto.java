@@ -17,8 +17,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Biglietto {
-    
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -26,13 +24,23 @@ public class Biglietto {
     private LocalDate dataAcquisto;
     @Column
     private double prezzo;
-    @Column
+    @Column(unique = true)
     private String seriale;
     @Column
-    private boolean cancellato;
+    private boolean IsCancellato;
     @Version
     private long version;
     @Column
     private long idUtente;
+    @Column(nullable = false)
+    private long idPrezzoSettoreEvento;
+
+    public Biglietto(LocalDate dataAcquisto, double prezzo, String seriale, long version, long idUtente, long idPrezzoSettoreEvento) {
+        this.dataAcquisto = dataAcquisto;
+        this.prezzo = prezzo;
+        this.seriale = seriale;
+        this.version = version;
+        this.idUtente = idUtente;
+        this.idPrezzoSettoreEvento = idPrezzoSettoreEvento;
+    }
 }
- 

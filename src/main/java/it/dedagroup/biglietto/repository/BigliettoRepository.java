@@ -14,14 +14,20 @@ public interface BigliettoRepository extends JpaRepository<Biglietto,Long> {
     public List<Biglietto> findAllByPrezzoIsLessThanEqual(double prezzo);
     public List<Biglietto> findAllByIdUtente(long id_utente);
     public List<Biglietto> findAllByDataAcquisto(LocalDate dataAcquisto);
+    public Optional<Biglietto> findByIdAndIdPrezzoSettoreEvento(long id_biglietto, long id_prezzoSettoreEvento);
+    public List<Biglietto> findAllByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento);
 
-    public Optional<Biglietto> findByIdAndCancellatoFalse(long id_biglietto);
-    public List<Biglietto> findAllByCancellatoFalse();
-    public Optional<Biglietto> findByIdAndIdUtenteAndCancellatoFalse(long id_biglietto, long id_utente);
-    public Optional<Biglietto> findBySerialeAndCancellatoFalse(String seriale);
-    public List<Biglietto> findAllByPrezzoIsGreaterThanEqualAndCancellatoFalse(double prezzo);
-    public List<Biglietto> findAllByPrezzoIsLessThanEqualAndCancellatoFalse(double prezzo);
-    public List<Biglietto> findAllByIdUtenteAndCancellatoFalse(long id_utente);
-    public List<Biglietto> findAllByDataAcquistoAndCancellatoFalse(LocalDate dataAcquisto);
+    public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(long id_prezzoSettoreEvento);
+    //TODO discutere del disdire il biglietto
+    public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNull(long id_prezzoSettoreEvento);
+
+    public Optional<Biglietto> findByIdAndIsCancellatoFalse(long id_biglietto);
+    public List<Biglietto> findAllByIsCancellatoFalse();
+    public Optional<Biglietto> findByIdAndIdUtenteAndIsCancellatoFalse(long id_biglietto, long id_utente);
+    public Optional<Biglietto> findBySerialeAndIsCancellatoFalse(String seriale);
+    public List<Biglietto> findAllByPrezzoIsGreaterThanEqualAndIsCancellatoFalse(double prezzo);
+    public List<Biglietto> findAllByPrezzoIsLessThanEqualAndIsCancellatoFalse(double prezzo);
+    public List<Biglietto> findAllByIdUtenteAndIsCancellatoFalse(long id_utente);
+    public List<Biglietto> findAllByDataAcquistoAndIsCancellatoFalse(LocalDate dataAcquisto);
 
 }
