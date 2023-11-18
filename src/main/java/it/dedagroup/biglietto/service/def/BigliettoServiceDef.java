@@ -20,9 +20,11 @@ public interface BigliettoServiceDef {
     public List<Biglietto> findAllByIdUtente(long id_utente);
     public List<Biglietto> findAllByDataAcquisto(LocalDate dataAcquisto);
     public Biglietto findByIdAndIdPrezzoSettoreEvento(long id_biglietto, long id_prezzoSettoreEvento);
-    public List<Biglietto> findAllByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento);
+    public List<Biglietto> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(long id_prezzoSettoreEvento);
 
     public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(long id_prezzoSettoreEvento);
+    public List<Double> findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento);
+
     public Biglietto findByIdAndIsCancellatoFalse(long id_biglietto);
     public List<Biglietto> findAllByIsCancellatoFalse();
     public Biglietto findByIdAndIdUtenteAndIsCancellatoFalse(long id_biglietto, long id_utente);

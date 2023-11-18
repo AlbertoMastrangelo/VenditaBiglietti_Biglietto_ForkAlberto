@@ -27,7 +27,7 @@ public class Biglietto {
     @Column(unique = true)
     private String seriale;
     @Column
-    private boolean IsCancellato;
+    private boolean isCancellato;
     @Version
     private long version;
     @Column

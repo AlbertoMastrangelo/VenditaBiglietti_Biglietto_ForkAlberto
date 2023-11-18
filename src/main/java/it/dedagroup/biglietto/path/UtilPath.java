@@ -17,4 +17,5 @@ public class UtilPath {
     public static final String FIND_BY_ID_AND_ID_PREZZO_SETTORE_EVENTO_PATH = BIGLIETTO_PATH+"/find/id/prezzo-settore-evento/id";
     public static final String FIND_ALL_BY_ID_PREZZO_SETTORE_EVENTO_PATH = BIGLIETTO_PATH+"/find/all/prezzo-settore-evento/id";
     public static final String COUNT_BY_ID_PREZZOSETTOREEVENTO_AND_DATA_ACQUISTO_ISNOT_NULL = BIGLIETTO_PATH+"/count/all/prezzo-settore-evento/id/data-acquisto/not-null";
+    public static final String FIND_DISTINCT_PREZZO_BIGLIETTO_PATH = BIGLIETTO_PATH+"/find/distinct/prezzo/prezzo-settore-evento";
 }
