@@ -2,6 +2,7 @@ package it.dedagroup.biglietto.repository;
 
 import it.dedagroup.biglietto.model.Biglietto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,11 +16,12 @@ public interface BigliettoRepository extends JpaRepository<Biglietto,Long> {
     public List<Biglietto> findAllByIdUtente(long id_utente);
     public List<Biglietto> findAllByDataAcquisto(LocalDate dataAcquisto);
     public Optional<Biglietto> findByIdAndIdPrezzoSettoreEvento(long id_biglietto, long id_prezzoSettoreEvento);
-    public List<Biglietto> findAllByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento);
+    public List<Biglietto> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(long id_prezzoSettoreEvento);
 
     public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(long id_prezzoSettoreEvento);
     //TODO discutere del disdire il biglietto
-    public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNull(long id_prezzoSettoreEvento);
+    @Query("SELECT DISTINCT b.prezzo FROM Biglietto b WHERE b.idPrezzoSettoreEvento =: x ORDER BY b.prezzo ASC")
+    public List<Double> findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento);
 
     public Optional<Biglietto> findByIdAndIsCancellatoFalse(long id_biglietto);
     public List<Biglietto> findAllByIsCancellatoFalse();

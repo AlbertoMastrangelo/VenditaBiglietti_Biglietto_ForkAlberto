@@ -27,7 +27,7 @@ public class BigliettoMapper {
 		biglietto.setDataAcquisto(b.getDataAcquisto());
 		biglietto.setPrezzo(b.getPrezzo());
 		biglietto.setSeriale(b.getSeriale());
-		biglietto.setIsCancellato(false);
+		biglietto.setCancellato(false);
 		biglietto.setIdUtente(b.getIdUtente());
 		return biglietto;
 	}

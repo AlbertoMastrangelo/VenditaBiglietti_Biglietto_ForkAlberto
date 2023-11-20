@@ -3,6 +3,7 @@ package it.dedagroup.biglietto.service.impl;
 import it.dedagroup.biglietto.model.Biglietto;
 import it.dedagroup.biglietto.repository.BigliettoRepository;
 import it.dedagroup.biglietto.service.def.BigliettoServiceDef;
+import it.dedagroup.biglietto.utils.Utility;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,8 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     @Transactional(rollbackOn = ResponseStatusException.class)
     @Override
     public Biglietto saveBiglietto(Biglietto biglietto) {
-    	return repo.save(biglietto);
+    	biglietto.setSeriale(Utility.creaSeriale(biglietto.getDataAcquisto(),biglietto.getIdUtente(),biglietto.getId()));
+        return repo.save(biglietto);
     }
     
     @Transactional(rollbackOn = ResponseStatusException.class)
@@ -33,7 +35,7 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
         b.setDataAcquisto(biglietto.getDataAcquisto());
         b.setPrezzo(biglietto.getPrezzo());
         b.setSeriale(biglietto.getSeriale());
-        b.setIsCancellato(biglietto.isIsCancellato());
+        b.setCancellato(biglietto.isCancellato());
         b.setVersion(biglietto.getVersion());
         return repo.save(b);
     }
@@ -42,7 +44,7 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     @Override
     public void deleteByBiglietto(long id_biglietto) {
         Biglietto b = findById(id_biglietto);
-        b.setIsCancellato(true);
+        b.setCancellato(true);
         repo.save(b);
     }
 
@@ -96,13 +98,18 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     }
 
     @Override
-    public List<Biglietto> findAllByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento) {
-        return repo.findAllByIdPrezzoSettoreEvento(id_prezzoSettoreEvento);
+    public List<Biglietto> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(long id_prezzoSettoreEvento) {
+        return repo.findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(id_prezzoSettoreEvento);
     }
 
     @Override
     public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(long id_prezzoSettoreEvento) {
         return repo.countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(id_prezzoSettoreEvento);
+    }
+
+    @Override
+    public List<Double> findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento) {
+        return repo.findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(id_prezzoSettoreEvento);
     }
 
     @Override

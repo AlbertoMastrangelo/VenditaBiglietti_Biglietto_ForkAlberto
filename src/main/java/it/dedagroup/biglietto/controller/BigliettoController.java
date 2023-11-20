@@ -110,8 +110,8 @@ public class BigliettoController {
             @ApiResponse(responseCode = "400", description = "Biglietto non trovato, errato inserimento dei RequestParam, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     })
     @GetMapping(FIND_ALL_BY_ID_PREZZO_SETTORE_EVENTO_PATH+"/{id_pse}")
-    public ResponseEntity<List<Biglietto>> findAllIdPrezzoSettoreEvento(@PathVariable("id_pse") long id_prezzoSettoreEvento){
-        return ResponseEntity.status(OK).body(bigliettoServiceDef.findAllByIdPrezzoSettoreEvento(id_prezzoSettoreEvento));
+    public ResponseEntity<List<Biglietto>> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(@PathVariable("id_pse") long id_prezzoSettoreEvento){
+        return ResponseEntity.status(OK).body(bigliettoServiceDef.findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(id_prezzoSettoreEvento));
     }
     @Operation(summary = "metodo per cercare un Biglietto tramite serialeBiglietto ", description = "In questo EndPoint cerchiamo il biglietto tramite il numero seriale del biglietto"
             + " inserito nel PathVariable")
@@ -170,5 +170,13 @@ public class BigliettoController {
     @GetMapping(COUNT_BY_ID_PREZZOSETTOREEVENTO_AND_DATA_ACQUISTO_ISNOT_NULL+"/{id}")
     public ResponseEntity<Integer> countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(@PathVariable("id") long id_prezzoSettoreEvento){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(id_prezzoSettoreEvento));
+    }
+    @Operation(summary = "metodo per trovare i valori distinti biglietti con ID prezzo settore evento inserito e la data di acquisto presente", description = "Questo EndPoint ritorna il conteggio dei biglietti tramite id prezzo settore evento inserito nel pathVariablela e data di acquisto presente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Viene restituito il conteggio dei biglietti con ID prezzo settore evento inserito e la data di acquisto presente", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Integer.class))),
+    })
+    @GetMapping(FIND_DISTINCT_PREZZO_BIGLIETTO_PATH+"/{id}")
+    public ResponseEntity<List<Double>> findDistinctPrezzoBiglietto(@PathVariable("id") long id_prezzoSettoreEvento){
+        return ResponseEntity.status(OK).body(bigliettoServiceDef.findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(id_prezzoSettoreEvento));
     }
 }
