@@ -13,17 +13,16 @@ public interface BigliettoServiceDef {
 
     public Biglietto findById(long id_biglietto);
     public List<Biglietto> findAll();
-    public Biglietto findByIdAndIdUtente(long id_biglietto, long id_utente);
     public Biglietto findBySeriale(String seriale);
     public List<Biglietto> findAllByPrezzoIsGreaterThanEqual(double prezzo);
     public List<Biglietto> findAllByPrezzoIsLessThanEqual(double prezzo);
     public List<Biglietto> findAllByIdUtente(long id_utente);
     public List<Biglietto> findAllByDataAcquisto(LocalDate dataAcquisto);
-    public Biglietto findByIdAndIdPrezzoSettoreEvento(long id_biglietto, long id_prezzoSettoreEvento);
     public List<Biglietto> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(long id_prezzoSettoreEvento);
 
     public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(long id_prezzoSettoreEvento);
     public List<Double> findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento);
+    public List<Biglietto> findAllByIdPrezzoSettoreEventoIn(List<Long> idsPrezzoSettoreEvento);
 
     public Biglietto findByIdAndIsCancellatoFalse(long id_biglietto);
     public List<Biglietto> findAllByIsCancellatoFalse();

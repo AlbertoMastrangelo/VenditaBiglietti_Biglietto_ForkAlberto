@@ -18,6 +18,8 @@ import it.dedagroup.biglietto.service.def.GeneralCallService;
 import static it.dedagroup.biglietto.path.UtilPath.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import java.time.LocalDate;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -56,7 +58,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 
 	@Test
 	@Order(3)
-	public void testFindByBigliettoSenzaDati() throws Exception{
+	public void testFindByIdBigliettoSenzaDati() throws Exception{
 		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_ID_PATH))
 			.andExpect(MockMvcResultMatchers.status().is4xxClientError())
 			.andReturn();
@@ -64,10 +66,10 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 
 	@Test
 	@Order(4)
-	public void testFindByBigliettoConDati() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_ID_PATH+"/1"))
+	public void testFindByIdBigliettoConDati() throws Exception{
+		mvc.perform(MockMvcRequestBuilders.post(FIND_BY_ID_PATH+"/1"))
 			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-			.andReturn();
+			.andDo(print());
 	}
 
 	@Test
@@ -96,22 +98,6 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 	}
 
 	@Test
-	@Order(8)
-	public void testTrovaBigliettoByIdAndIdUtenteSenzaDati() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_ID_AND_UTENTE_ID_PATH))
-		.andExpect(MockMvcResultMatchers.status().is4xxClientError())
-		.andReturn();
-	}
-
-	@Test
-	@Order(9)
-	public void testTrovaBigliettoByIdAndIdUtenteConDati() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_ID_AND_UTENTE_ID_PATH+"/1/4"))
-		.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-		.andReturn();
-	}
-
-	@Test
 	@Order(10)
 	public void testTrovaBigliettoBySerialeSenzaDati() throws Exception{
 		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_SERIALE_PATH))
@@ -122,8 +108,8 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 	@Test
 	@Order(11)
 	public void testTrovaBigliettoBySerialeConDati() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.get(FIND_BY_SERIALE_PATH+"/YYYYYYYY"))
-			.andExpectAll(MockMvcResultMatchers.status().is2xxSuccessful())
+		mvc.perform(MockMvcRequestBuilders.post(FIND_BY_SERIALE_PATH+"/267960E3"))
+			.andExpectAll(MockMvcResultMatchers.status().is4xxClientError())
 			.andDo(print());
 	}
 
@@ -170,7 +156,7 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 	@Test
 	@Order(16)
 	public void testTrovaListaDiBigliettiByUtenteConDati() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.get(FIND_ALL_BY_ID_UTENTE_PATH+"/1"))
+		mvc.perform(MockMvcRequestBuilders.post(FIND_ALL_BY_ID_UTENTE_PATH+"/1"))
 			.andExpectAll(MockMvcResultMatchers.status().is2xxSuccessful())
 			.andReturn();
 	}
@@ -187,5 +173,17 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 	public void testCountBigliettiComprati() {
 		int count = repo.countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(1);
 		assertEquals(1,count);
+	}
+	@Test
+	@Order(19)
+	public void testRecuperoDistintoPrezzoBiglietto(){
+		List<Double> prezziDistinti = repo.findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(1);
+		assertEquals(1, prezziDistinti.size());
+	}
+	@Test
+	@Order(20)
+	public void testFindAllByIdPrezzoSettoreEventoIn(){
+		List<Biglietto> biglietti = repo.findAllByIdPrezzoSettoreEventoIn(List.of(1L,2L));
+		assertEquals(1,biglietti.size());
 	}
 }

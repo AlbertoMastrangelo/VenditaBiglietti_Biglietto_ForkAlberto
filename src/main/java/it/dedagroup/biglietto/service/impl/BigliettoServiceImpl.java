@@ -57,15 +57,6 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     public List<Biglietto> findAll() {
         return repo.findAll();
     }
-    //0105ABRCTG
-    @Override
-    public Biglietto findByIdAndIdUtente(long id_biglietto, long id_utente) {
-        return repo.findByIdAndIdUtente(id_biglietto,id_utente).orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Errore nel trovare il biglietto con id: "+id_biglietto+" e id utente: "+id_utente)
-        );
-    }
 
     @Override
     public Biglietto findBySeriale(String seriale) {
@@ -93,11 +84,6 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     }
 
     @Override
-    public Biglietto findByIdAndIdPrezzoSettoreEvento(long id_biglietto, long id_prezzoSettoreEvento) {
-        return repo.findByIdAndIdPrezzoSettoreEvento(id_biglietto, id_prezzoSettoreEvento).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Errore nel trovare il biglietto tramite id: "+id_biglietto+" e id prezzo settore evento: "+id_prezzoSettoreEvento));
-    }
-
-    @Override
     public List<Biglietto> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(long id_prezzoSettoreEvento) {
         return repo.findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(id_prezzoSettoreEvento);
     }
@@ -110,6 +96,11 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
     @Override
     public List<Double> findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(long id_prezzoSettoreEvento) {
         return repo.findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(id_prezzoSettoreEvento);
+    }
+
+    @Override
+    public List<Biglietto> findAllByIdPrezzoSettoreEventoIn(List<Long> idsPrezzoSettoreEvento) {
+        return repo.findAllByIdPrezzoSettoreEventoIn(idsPrezzoSettoreEvento);
     }
 
     @Override
