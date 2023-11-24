@@ -4,6 +4,7 @@ import it.dedagroup.biglietto.model.Biglietto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface BigliettoServiceDef {
@@ -26,10 +27,10 @@ public interface BigliettoServiceDef {
 
     public Biglietto findByIdAndIsCancellatoFalse(long id_biglietto);
     public List<Biglietto> findAllByIsCancellatoFalse();
-    public Biglietto findByIdAndIdUtenteAndIsCancellatoFalse(long id_biglietto, long id_utente);
     public Biglietto findBySerialeAndIsCancellatoFalse(String seriale);
     public List<Biglietto> findAllByPrezzoIsGreaterThanEqualAndIsCancellatoFalse(double prezzo);
     public List<Biglietto> findAllByPrezzoIsLessThanEqualAndIsCancellatoFalse(double prezzo);
     public List<Biglietto> findAllByIdUtenteAndIsCancellatoFalse(long id_utente);
     public List<Biglietto> findAllByDataAcquistoAndIsCancellatoFalse(LocalDate dataAcquisto);
+    public List<Biglietto> findAllBigliettiFiltrati(Map<String,String> parametriBiglietto);
 }

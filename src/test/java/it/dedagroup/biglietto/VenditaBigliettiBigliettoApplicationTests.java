@@ -1,5 +1,6 @@
 package it.dedagroup.biglietto;
 
+import it.dedagroup.biglietto.repository.BigliettoCriteriaQuery;
 import it.dedagroup.biglietto.repository.BigliettoRepository;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -18,7 +19,9 @@ import it.dedagroup.biglietto.service.def.GeneralCallService;
 import static it.dedagroup.biglietto.path.UtilPath.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,6 +35,8 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 	MockMvc mvc;
 	@Autowired
 	BigliettoRepository repo;
+	@Autowired
+	BigliettoCriteriaQuery criteriaQuery;
 	@Test
 	@Order(1)
 	public void testSaveBigliettoSenzaDati() throws Exception{
@@ -168,6 +173,16 @@ class VenditaBigliettiBigliettoApplicationTests implements GeneralCallService{
 			.andExpectAll(MockMvcResultMatchers.status().is4xxClientError())
 			.andReturn();
 	}
+
+	@Test
+	@Order(18)
+	public void testTrovaBigliettiFiltrati() throws Exception {
+		Map<String,String> map = new HashMap<>();
+		map.put("idUtente","4");
+		List<Biglietto> biglietti = criteriaQuery.getBigliettiFiltrati(map);
+		assertEquals(1, biglietti.size());
+	}
+
 	@Test
 	@Order(18)
 	public void testCountBigliettiComprati() {
