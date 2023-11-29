@@ -1,5 +1,6 @@
 package it.dedagroup.biglietto.service.def;
 
+import it.dedagroup.biglietto.dto.request.AggiuntaBigliettoDTORequest;
 import it.dedagroup.biglietto.model.Biglietto;
 
 import java.time.LocalDate;
@@ -8,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface BigliettoServiceDef {
-    public Biglietto saveBiglietto(Biglietto biglietto);
+    public Biglietto saveBiglietto(AggiuntaBigliettoDTORequest biglietto);
     public Biglietto modifyBiglietto(Biglietto biglietto);
     public void deleteByBiglietto(long id_biglietto);
 
