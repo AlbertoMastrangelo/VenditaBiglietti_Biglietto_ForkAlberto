@@ -1,7 +1,9 @@
 package it.dedagroup.biglietto.controller;
 
+import it.dedagroup.biglietto.dto.request.AggiuntaBigliettoDTORequest;
 import it.dedagroup.biglietto.model.Biglietto;
 import it.dedagroup.biglietto.service.def.BigliettoServiceDef;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -43,7 +45,7 @@ public class BigliettoController {
     	       @ApiResponse(responseCode = "400", description = "Errato inserimento del JSON, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     	})
     @PostMapping(INSERT_BIGLIETTO_PATH)
-    public ResponseEntity<Biglietto> saveBiglietto(@RequestBody Biglietto biglietto){
+    public ResponseEntity<Biglietto> saveBiglietto(@RequestBody @Valid AggiuntaBigliettoDTORequest biglietto){
         return ResponseEntity.status(CREATED).body(bigliettoServiceDef.saveBiglietto(biglietto));
     }
 
@@ -53,7 +55,7 @@ public class BigliettoController {
     	       @ApiResponse(responseCode = "400", description = "Errato inserimento del JSON, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     	})
     @PostMapping(MODIFY_BIGLIETTO_PATH)
-    public ResponseEntity<Biglietto> modifyBiglietto(@RequestBody Biglietto biglietto){
+    public ResponseEntity<Biglietto> modifyBiglietto(@RequestBody @Valid Biglietto biglietto){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.modifyBiglietto(biglietto));
     }
 
@@ -64,7 +66,7 @@ public class BigliettoController {
     	       @ApiResponse(responseCode = "400", description = "Biglietto non trovato, Errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     	})
     @PostMapping(DELETE_BIGLIETTO_PATH+"/{id}")
-    public ResponseEntity<String> deleteByBiglietto(@PathVariable("id") @Positive(message = "Inserisci un id positivo") @Min(value = 1, message = "Inserisci un valore maggiore o uguale a 1") long id_biglietto){
+    public ResponseEntity<String> deleteByBiglietto(@Valid @PathVariable("id") @Positive(message = "Inserisci un id positivo") @Min(value = 1, message = "Inserisci un valore maggiore o uguale a 1") long id_biglietto){
         bigliettoServiceDef.deleteByBiglietto(id_biglietto);
         return ResponseEntity.status(NO_CONTENT).body("Biglietto cancellato con successo");
     }
@@ -76,7 +78,7 @@ public class BigliettoController {
 			@ApiResponse(responseCode = "404", description = "Biglietto non trovato, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @PostMapping(FIND_BY_ID_PATH+"/{id}")
-    public ResponseEntity<Biglietto> findById(@PathVariable("id") @Positive(message = "Inserire un id positivo") @Min(value = 1, message = "Inserire un id di valore minimo a 1") long id_biglietto){
+    public ResponseEntity<Biglietto> findById(@Valid @PathVariable("id") @Positive(message = "Inserire un id positivo") @Min(value = 1, message = "Inserire un id di valore minimo a 1") long id_biglietto){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.findById(id_biglietto));
     }
 
@@ -96,7 +98,7 @@ public class BigliettoController {
             @ApiResponse(responseCode = "404", description = "Biglietto non trovato, errato inserimento dei RequestParam, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     })
     @PostMapping(FIND_ALL_BY_ID_PREZZO_SETTORE_EVENTO_PATH+"/{id_pse}")
-    public ResponseEntity<List<Biglietto>> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(@PathVariable("id_pse") @Positive(message = "Inserire un id positivo") @Min(value = 1, message = "Inserire un id di valore maggiore o uguale a 1") long id_prezzoSettoreEvento){
+    public ResponseEntity<List<Biglietto>> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(@Valid @PathVariable("id_pse") @Positive(message = "Inserire un id positivo") @Min(value = 1, message = "Inserire un id di valore maggiore o uguale a 1") long id_prezzoSettoreEvento){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(id_prezzoSettoreEvento));
     }
     @Operation(summary = "Metodo per cercare un Biglietto tramite serialeBiglietto ", description = "In questo EndPoint cerchiamo il biglietto tramite il numero seriale del biglietto"
@@ -106,7 +108,7 @@ public class BigliettoController {
             @ApiResponse(responseCode = "404", description = "Biglietto non trovato, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
     })
     @PostMapping(FIND_BY_SERIALE_PATH+"/{seriale}")
-    public ResponseEntity<Biglietto> findBySeriale(@PathVariable("seriale") @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Inserire un seriale contenente solo numeri e lettere") @NotBlank(message = "Inserire un valore nel campo: seriale") String seriale){
+    public ResponseEntity<Biglietto> findBySeriale(@Valid @PathVariable("seriale") @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Inserire un seriale contenente solo numeri e lettere") @NotBlank(message = "Inserire un valore nel campo: seriale") String seriale){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.findBySeriale(seriale));
     }
 
@@ -116,7 +118,7 @@ public class BigliettoController {
 			@ApiResponse(responseCode = "400", description = "Lista di biglietti non trovata tramite prezzo superiore, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_ALL_BY_PREZZO_IS_GREATER_THAN_EQUAL_PATH+"/{prezzo}")
-    public ResponseEntity<List<Biglietto>> findAllByPrezzoIsGreaterThanEqual(@PathVariable("prezzo") @Positive(message = "Inserire un valore numerico positivo per il prezzo") @Min(value = 0, message =  "Inserire un valore numerico maggiore di o uguale a 0 per il prezzo") double prezzo){
+    public ResponseEntity<List<Biglietto>> findAllByPrezzoIsGreaterThanEqual(@Valid @PathVariable("prezzo") @Positive(message = "Inserire un valore numerico positivo per il prezzo") @Min(value = 0, message =  "Inserire un valore numerico maggiore di o uguale a 0 per il prezzo") double prezzo){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.findAllByPrezzoIsGreaterThanEqual(prezzo));
     }
 
@@ -126,7 +128,7 @@ public class BigliettoController {
 			@ApiResponse(responseCode = "400", description = "Lista di biglietti non trovata tramite prezzo inferiore, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @GetMapping(FIND_ALL_BY_PREZZO_IS_LESS_THAN_EQUAL_PATH+"/{prezzo}")
-    public ResponseEntity<List<Biglietto>> findAllByPrezzoIsLessThanEqual(@PathVariable("prezzo") @Positive(message = "Inserire un valore numerico positivo per il prezzo") @Min(value = 0, message =  "Inserire un valore numerico maggiore di o uguale a 0 per il prezzo") double prezzo){
+    public ResponseEntity<List<Biglietto>> findAllByPrezzoIsLessThanEqual(@Valid @PathVariable("prezzo") @Positive(message = "Inserire un valore numerico positivo per il prezzo") @Min(value = 0, message =  "Inserire un valore numerico maggiore di o uguale a 0 per il prezzo") double prezzo){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.findAllByPrezzoIsLessThanEqual(prezzo));
     }
 
@@ -136,7 +138,7 @@ public class BigliettoController {
 			@ApiResponse(responseCode = "400", description = "Lista di biglietti non trovata tramite l'ID Utente inserito, errato inserimento del PathVariable, ci viene restituito come risposta un errore", content = @Content(mediaType = MediaType.ALL_VALUE))
 				})
     @PostMapping(FIND_ALL_BY_ID_UTENTE_PATH+"/{id}")
-    public ResponseEntity<List<Biglietto>> findAllByIdUtente(@PathVariable("id") @Positive(message = "Inserire un valore numerico positivo per l'id") @Min(value = 1, message =  "Inserire un valore numerico maggiore di o uguale a 0 per il prezzo")long id_utente){
+    public ResponseEntity<List<Biglietto>> findAllByIdUtente(@Valid @PathVariable("id") @Positive(message = "Inserire un valore numerico positivo per l'id") @Min(value = 1, message =  "Inserire un valore numerico maggiore di o uguale a 0 per il prezzo")long id_utente){
         return ResponseEntity.status(OK).body(bigliettoServiceDef.findAllByIdUtente(id_utente));
     }
 

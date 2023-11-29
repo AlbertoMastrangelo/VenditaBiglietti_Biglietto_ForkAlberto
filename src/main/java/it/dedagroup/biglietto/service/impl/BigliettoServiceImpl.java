@@ -1,5 +1,7 @@
 package it.dedagroup.biglietto.service.impl;
 
+import it.dedagroup.biglietto.dto.request.AggiuntaBigliettoDTORequest;
+import it.dedagroup.biglietto.mapper.BigliettoMapper;
 import it.dedagroup.biglietto.model.Biglietto;
 import it.dedagroup.biglietto.repository.BigliettoRepository;
 import it.dedagroup.biglietto.repository.BigliettoCriteriaQuery;
@@ -22,7 +24,8 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
 	
     private final BigliettoRepository repo;
     private final BigliettoCriteriaQuery criteriaQuery;
-
+    private final MailSenderService mailSenderService;
+    private final BigliettoMapper bigliettoMapper;
     /**
      * Metodo per salvare un biglietto tramite microservizio
      * @param biglietto - Oggetto DTO Request per poter salvare un biglietto
@@ -31,14 +34,10 @@ public class BigliettoServiceImpl implements BigliettoServiceDef {
      */
     @Transactional(rollbackOn = Exception.class)
     @Override
-    public Biglietto saveBiglietto(Biglietto biglietto) {
-        try {
-            biglietto.setSeriale(Utility.creaSeriale(biglietto.getDataAcquisto(),biglietto.getIdUtente(),biglietto.getId()));
-            return repo.save(biglietto);
-        } catch (OptimisticLockingFailureException e){
-            throw new OptimisticLockingFailureException("Il biglietto e' stato modificato");
-        }
-
+    public Biglietto saveBiglietto(AggiuntaBigliettoDTORequest biglietto) {
+        Biglietto bigliettoNuovo = bigliettoMapper.fromAggiuntaBigliettoDTOToBiglietto(biglietto);
+        mailSenderService.inviaMessaggio(biglietto.getEmail(), biglietto.getNome(), biglietto.getCognome());
+        return repo.save(bigliettoNuovo);
     }
     /**
      * Metodo per modificare un biglietto tramite microservizio

@@ -18,7 +18,6 @@ public interface BigliettoRepository extends JpaRepository<Biglietto,Long> {
     public List<Biglietto> findAllByIdPrezzoSettoreEventoOrderByPrezzoAsc(long id_prezzoSettoreEvento);
 
     public int countByIdPrezzoSettoreEventoAndDataAcquistoIsNotNull(long id_prezzoSettoreEvento);
-    //TODO discutere del disdire il biglietto
     @Query("SELECT DISTINCT b.prezzo FROM Biglietto b WHERE b.idPrezzoSettoreEvento = :x ORDER BY b.prezzo ASC")
     public List<Double> findDistinctPrezzoBigliettoByIdPrezzoSettoreEvento(@Param("x") long id_prezzoSettoreEvento);
 

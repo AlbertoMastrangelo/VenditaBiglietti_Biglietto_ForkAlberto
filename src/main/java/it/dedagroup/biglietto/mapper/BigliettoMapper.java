@@ -1,7 +1,10 @@
 package it.dedagroup.biglietto.mapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import it.dedagroup.biglietto.dto.request.AggiuntaBigliettoDTORequest;
+import it.dedagroup.biglietto.utils.Utility;
 import org.springframework.stereotype.Component;
 
 import it.dedagroup.biglietto.dto.request.BigliettoDTORequest;
@@ -20,7 +23,15 @@ public class BigliettoMapper {
 		biglietto.setVersion(b.getVersion());
 		return biglietto;
 	}
-	
+	public Biglietto fromAggiuntaBigliettoDTOToBiglietto(AggiuntaBigliettoDTORequest request){
+		Biglietto biglietto = new Biglietto();
+		biglietto.setDataAcquisto(LocalDate.now());
+		biglietto.setSeriale(Utility.creaSeriale(biglietto.getDataAcquisto(),biglietto.getIdUtente()));
+		biglietto.setPrezzo(request.getPrezzo());
+		biglietto.setIdUtente(request.getIdUtente());
+		biglietto.setIdPrezzoSettoreEvento(request.getIdPrezzoSettoreEvento());
+		return biglietto;
+	}
 	public Biglietto fromDTORequestToBiglietto (BigliettoDTORequest b) {
 		if(b==null) return null;
 		Biglietto biglietto = new Biglietto();
